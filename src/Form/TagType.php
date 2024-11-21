@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Post;
 use App\Entity\Tag;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,6 +18,10 @@ class TagType extends AbstractType
             ->add('name')
             ->add('post', EntityType::class, [
                 'class' => Post::class,
+                'choice_label' => 'id',
+            ])
+            ->add('user', EntityType::class, [
+                'class' => User::class,
                 'choice_label' => 'id',
             ])
         ;
