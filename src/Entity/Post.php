@@ -24,6 +24,7 @@ class Post
     private string $title = '';
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
