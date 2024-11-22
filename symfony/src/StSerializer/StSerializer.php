@@ -152,6 +152,8 @@ class StSerializer
 
                                 $adder = 'add' . ucfirst(rtrim($relation->name, 's'));
                                 $object->$adder($child);
+
+                                $this->em->persist($child);
                             } else {
                                 throw new \Exception(
                                     "Found new entity without id on $relation->name, but Rel::createNew is false",

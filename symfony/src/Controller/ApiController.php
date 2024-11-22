@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -18,7 +20,11 @@ class ApiController extends AbstractController
     #[Route('/post/{id}', name: 'api_post_show', methods: ['GET'])]
     public function show(Post $post, StSerializer $serializer): Response
     {
-        $json = $serializer->normalize($post, relations: ['tags' => ['createdBy']]);
+        $json = $serializer->normalize(
+            $post,
+            relations: ['tags' => ['createdBy']],
+            groups: ['default', 'administrator'],
+        );
 
         dd(json_encode($json, JSON_PRETTY_PRINT));
 
@@ -31,10 +37,11 @@ class ApiController extends AbstractController
         Request $request,
         StSerializer $serializer,
         EntityManagerInterface $em,
+        ValidatorInterface $validator,
+        SerializerInterface $symfonySerializer,
     ) {
         // Normally data would come from $request ofcourse
         $data = [
-            'id' => 1,
             'title' => 'Updated post title',
             'tags' => [
                 [
@@ -53,7 +60,17 @@ class ApiController extends AbstractController
             relations: [new Rel('tags', orphanRemoval: true, createNew: true)],
         );
 
-        dd($post);
+        dump($post);
+
+        $errors = $validator->validate($post);
+        if (count($errors) > 0) {
+            return JsonResponse::fromJsonString(
+                $symfonySerializer->serialize($errors, 'json'),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
+        die();
 
         $em->flush();
 

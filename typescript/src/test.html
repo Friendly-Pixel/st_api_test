@@ -1,0 +1,22 @@
+<app-admin-form>
+    <app-form-row
+        label="Post name"
+        help="Leave empty for auto-generated name"
+        [data]=[data]
+        [data-path]="['name']" 
+        widget="app-text-widget"
+    />
+    <app-form-one-to-many
+        label="Tags"
+        [data]=[data]
+        [data-path]="['tags']"
+        
+    >
+        <app-form-row
+            label="Tag name"
+            [data]=[data]
+            [data-path]="['name']"
+            widget="app-text-widget"
+        />
+    </app-form-one-to-many>
+</app-admin-form>

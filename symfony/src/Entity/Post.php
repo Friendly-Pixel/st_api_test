@@ -20,17 +20,19 @@ class Post
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    // #[Assert\Length(max: 10)]
     #[Groups(['default'])]
     private string $title = '';
 
     #[ORM\Column]
-    #[Groups(['default'])]
+    #[Groups(['administrator'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, Tag>
      */
     #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'post')]
+    #[Assert\Valid]
     private Collection $tags;
 
     public function __construct()
