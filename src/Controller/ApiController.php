@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\StSerializer\Rel;
 use App\StSerializer\StSerializer;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -24,8 +26,13 @@ class ApiController extends AbstractController
     }
 
     #[Route('/post/{id}/update', name: 'api_post_update', methods: ['GET'])]
-    public function update(Post $post, StSerializer $serializer)
-    {
+    public function update(
+        Post $post,
+        Request $request,
+        StSerializer $serializer,
+        EntityManagerInterface $em,
+    ) {
+        // Normally data would come from $request ofcourse
         $data = [
             'id' => 1,
             'title' => 'Updated post title',
@@ -47,5 +54,9 @@ class ApiController extends AbstractController
         );
 
         dd($post);
+
+        $em->flush();
+
+        return new JsonResponse('ok');
     }
 }

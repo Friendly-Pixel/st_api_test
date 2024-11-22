@@ -20,11 +20,10 @@ class TagType extends AbstractType
                 'class' => Post::class,
                 'choice_label' => 'id',
             ])
-            ->add('user', EntityType::class, [
+            ->add('createdBy', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'id',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

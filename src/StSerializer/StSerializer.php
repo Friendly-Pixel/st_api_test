@@ -2,6 +2,7 @@
 
 namespace App\StSerializer;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\MappingAttribute;
 use Doctrine\ORM\Mapping\OneToMany;
 use FriendlyPixel\Ar\Ar;
@@ -18,6 +19,7 @@ class StSerializer
     public function __construct(
         private Symf\SerializerInterface $symfonySerializer,
         private PropertyAccessorInterface $propertyAccessor,
+        private EntityManagerInterface $em,
     ) {
     }
 
@@ -158,7 +160,7 @@ class StSerializer
                         }
                     }
 
-                    if ($relation->orphanRemoval) {
+                    if ($relation->shouldHandleOrphans()) {
                         // Remove any entities missing from the data array
                         $missing = Ar::filter(
                             $children,
@@ -171,6 +173,10 @@ class StSerializer
                         foreach ($missing as $child) {
                             $remover = 'remove' . ucfirst(rtrim($relation->name, 's'));
                             $object->$remover($child);
+
+                            if ($relation->orphanDelete) {
+                                $this->em->remove($child);
+                            }
                         }
                     }
                 } else {
