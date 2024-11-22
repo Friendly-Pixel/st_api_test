@@ -9,6 +9,10 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Serializer as Symf;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
+/**
+ * A thin helper class for (un)serializing json. Uses symfony serializer for simple/primitive values
+ * but we handle relations (manyToMany etc) ourselves.
+ */
 class StSerializer
 {
     public function __construct(
